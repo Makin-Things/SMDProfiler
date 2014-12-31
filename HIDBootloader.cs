@@ -120,8 +120,8 @@ namespace SMDProfiler
 			int deviceFound;
 			String[] devicePathName = new String[128];
 			Guid hidGuid = Guid.Empty;
-			Int32 myProductID = 0x2068;
-			Int32 myVendorID = 0x03EB;
+			Int32 myProductID = 0x7000;
+			Int32 myVendorID = 0x1D50;
 			Boolean success = false;
 			DeviceManagement dm = new DeviceManagement();
 
@@ -340,6 +340,7 @@ namespace SMDProfiler
 		{
 			FileStream inFile;
 			bool success;
+            int version;
 
 			try
 			{
@@ -365,7 +366,9 @@ namespace SMDProfiler
 
 				inFile.Close();
 
-				for (int index = 0; index < bufferSize; index += frameSize)
+                version = (buffer[0] << 8) | (buffer[1]);
+
+				for (int index = 2; index < bufferSize; index += frameSize)
 				{
 					frameSize = ((buffer[index] << 8) | buffer[index + 1]) + 2;
 					Debug.WriteLine("Framesize = " + frameSize);
