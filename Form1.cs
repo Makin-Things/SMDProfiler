@@ -50,8 +50,8 @@ namespace SMDProfiler
 			series = new Dictionary<string,__processSeries>(4);
 			series.Add("=RUN", new __processSeries("RUN", new string[] { "Preheat", "Preheat cutoff", "Soak", "Reflow", "Reflow cutoff", "Open door", "Cooldown" }, 
 													new System.Drawing.Color[] { Color.LightSkyBlue, Color.Gold, Color.LawnGreen, Color.Red, Color.DarkOrange, Color.MediumOrchid, Color.MediumSlateBlue }, 360, 250, setup_Process_RUN, Process_RUN));
-			series.Add("=OCAL", new __processSeries("OCAL", new string[] { "10%", "20%", "30%", "40%", "50%" },
-													new System.Drawing.Color[] { Color.LightSkyBlue, Color.Gold, Color.LawnGreen, Color.Red, Color.DarkOrange }, 600, 250, setup_Process_OCAL, Process_OCAL));
+			series.Add("=OCAL", new __processSeries("OCAL", new string[] { "5%", "10%", "15%", "20%", "25%", "30%", "35%", "40%", "45%", "50%"},
+                                                    new System.Drawing.Color[] { Color.LightSkyBlue, Color.Gold, Color.LawnGreen, Color.Red, Color.DarkOrange, Color.MediumOrchid, Color.MediumSlateBlue, Color.LightSalmon, Color.Moccasin, Color.Peru}, 900, 300, setup_Process_OCAL, Process_OCAL));
 			series.Add("=END", new __processSeries(end_Process));
 			series.Add("=ABORT", new __processSeries(abort_Process));
 			series.Add("=OGET", new __processSeries(oven_get));
@@ -153,7 +153,11 @@ namespace SMDProfiler
 
 				if (_hidBootloader.IsBootloaderOpen)
 				{
+<<<<<<< .mine
+					_hidBootloader.ProgramFlash("C:\\Develop\\Reflow Oven USB\\Reflow Oven USB\\Release\\Reflow Oven USB.enc");
+=======
 					_hidBootloader.ProgramFlash("Z:\\Temp\\Reflow Oven USB.enc");
+>>>>>>> .r2
 				}
 			}
 			catch (Exception ex)
