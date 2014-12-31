@@ -182,7 +182,7 @@ namespace SMDProfiler
 
 			foreach (ManagementObject USB in mc.GetInstances())
 			{
-				if (USB["PnPDeviceID"].ToString().StartsWith(@"USB\VID_03EB&PID_2044\"))
+				if (USB["PnPDeviceID"].ToString().StartsWith(@"USB\VID_1D50&PID_7001\"))
 				{
 					listPorts.Add(new VirtualSerialPort(mainForm, USB["DeviceID"].ToString()));
 				}
