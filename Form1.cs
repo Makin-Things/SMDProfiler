@@ -153,7 +153,7 @@ namespace SMDProfiler
 
 				if (_hidBootloader.IsBootloaderOpen)
 				{
-					_hidBootloader.ProgramFlash("Z:\\Develop\\Atmel\\Reflow Oven USB\\Default\\ReflowOven.enc");
+					_hidBootloader.ProgramFlash("Z:\\Temp\\Reflow Oven USB.enc");
 				}
 			}
 			catch (Exception ex)
