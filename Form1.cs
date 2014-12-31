@@ -153,11 +153,8 @@ namespace SMDProfiler
 
 				if (_hidBootloader.IsBootloaderOpen)
 				{
-<<<<<<< .mine
-					_hidBootloader.ProgramFlash("C:\\Develop\\Reflow Oven USB\\Reflow Oven USB\\Release\\Reflow Oven USB.enc");
-=======
+//			        _hidBootloader.ProgramFlash("C:\\Develop\\Reflow Oven USB\\Reflow Oven USB\\Release\\Reflow Oven USB.enc");
 					_hidBootloader.ProgramFlash("Z:\\Temp\\Reflow Oven USB.enc");
->>>>>>> .r2
 				}
 			}
 			catch (Exception ex)
