@@ -33,6 +33,7 @@ namespace SMDProfiler
 		private int lastSeries;
 		private decimal tempStart;
 		private int timeStart;
+        private System.IO.StreamWriter logFile;
 
 		private IntPtr deviceNotificationHandle1;
 		private IntPtr deviceNotificationHandle2;
@@ -47,12 +48,14 @@ namespace SMDProfiler
 		{
 			InitializeComponent();
 
-			series = new Dictionary<string,__processSeries>(4);
+			series = new Dictionary<string,__processSeries>(6);
 			series.Add("=RUN", new __processSeries("RUN", new string[] { "Preheat", "Preheat cutoff", "Soak", "Reflow", "Reflow cutoff", "Open door", "Cooldown" }, 
-													new System.Drawing.Color[] { Color.LightSkyBlue, Color.Gold, Color.LawnGreen, Color.Red, Color.DarkOrange, Color.MediumOrchid, Color.MediumSlateBlue }, 360, 250, setup_Process_RUN, Process_RUN));
+													new System.Drawing.Color[] { Color.LightSkyBlue, Color.Gold, Color.LawnGreen, Color.Red, Color.DarkOrange, Color.MediumOrchid, Color.MediumSlateBlue }, 360, 250, setup_Process_RUN, Process_RUN, term_Process_RUN));
 			series.Add("=OCAL", new __processSeries("OCAL", new string[] { "5%", "10%", "15%", "20%", "25%", "30%", "35%", "40%", "45%", "50%"},
-                                                    new System.Drawing.Color[] { Color.LightSkyBlue, Color.Gold, Color.LawnGreen, Color.Red, Color.DarkOrange, Color.MediumOrchid, Color.MediumSlateBlue, Color.LightSalmon, Color.Moccasin, Color.Peru}, 900, 300, setup_Process_OCAL, Process_OCAL));
-			series.Add("=END", new __processSeries(end_Process));
+                                                    new System.Drawing.Color[] { Color.LightSkyBlue, Color.Gold, Color.LawnGreen, Color.Red, Color.DarkOrange, Color.MediumOrchid, Color.MediumSlateBlue, Color.LightSalmon, Color.Moccasin, Color.Peru}, 900, 300, setup_Process_OCAL, Process_OCAL, term_Process_OCAL));
+            series.Add("=O120", new __processSeries("O120", new string[] { "100%", "Overshoot" },
+                                                    new System.Drawing.Color[] { Color.LightSkyBlue, Color.Gold }, 360, 250, setup_Process_O120, Process_O120, term_Process_O120));
+            series.Add("=END", new __processSeries(end_Process));
 			series.Add("=ABORT", new __processSeries(abort_Process));
 			series.Add("=OGET", new __processSeries(oven_get));
 		}
@@ -434,6 +437,9 @@ namespace SMDProfiler
 			lastSeries = 3;
 			lblProcess.Text = series[process].SeriesProcess + " - " + series[process].SeriesNames[0];
 			lblProcess.ForeColor = Color.Red;
+            DateTime now = DateTime.Now;
+            logFile = new System.IO.StreamWriter(@"z:\\temp\\SMD Profiler OCAL "+now.ToString("yyyyMMdd HHmmss")+".txt");
+            logFile.WriteLine("stage, time, temp, duty, delta4, delta16, delta64");
 		}
 		
 //------------------------------------------------------------------------------------------------------------------------------
@@ -448,7 +454,48 @@ namespace SMDProfiler
 			}
 		}
 
-		//------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------
+
+        private void term_Process_OCAL(string[] bits)
+        {
+            logFile.Close();
+        }
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+        private void setup_Process_O120(string[] bits)
+        {
+            createGraph(process);
+            lastSeries = 3;
+            lblProcess.Text = series[process].SeriesProcess + " - " + series[process].SeriesNames[0];
+            lblProcess.ForeColor = Color.Red;
+            DateTime now = DateTime.Now;
+            logFile = new System.IO.StreamWriter(@"z:\\temp\\SMD Profiler O120 " + now.ToString("yyyyMMdd HHmmss") + ".txt");
+            logFile.WriteLine("stage, time, temp, duty, delta4, delta16, delta64");
+        }
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+        private void Process_O120(string[] bits)
+        {
+            if (lastSeries != Convert.ToInt16(bits[0]))
+            {
+                chart1.Series.FindByName(series[process].SeriesNames[Convert.ToInt16(bits[0]) - 4]).Points.AddXY(Convert.ToInt16(bits[1]) / 2, Convert.ToDecimal(bits[2]));
+
+                lblProcess.Text = series[process].SeriesProcess + " - " + series[process].SeriesNames[Convert.ToInt16(bits[0]) - 3];
+
+                lastSeries = Convert.ToInt16(bits[0]);
+            }
+        }
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+        private void term_Process_O120(string[] bits)
+        {
+            logFile.Close();
+        }
+
+//------------------------------------------------------------------------------------------------------------------------------
 
 		private void setup_Process_RUN(string[] bits)
 		{
@@ -465,7 +512,18 @@ namespace SMDProfiler
 			lblPreheatCutoff.Text = bits[8];
 			lblReflowCutoff.Text = bits[9];
 			gbProfile.Visible = true;
-		}
+            lblPreheatRate.Visible = false;
+            lblPreheatEndTemp.Visible = false;
+            lblSoakTime.Visible = false;
+            lblSoakRate.Visible = false;
+            lblMaxTemp.Visible = false;
+            lblTimeAbove.Visible = false;
+            lblCoolingRate.Visible = false;
+            tempStart = 0;
+            DateTime now = DateTime.Now;
+            logFile = new System.IO.StreamWriter(@"z:\\temp\\SMD Profiler OCAL " + now.ToString("yyyyMMdd HHmmss") + ".txt");
+            logFile.WriteLine("stage, time, temp, duty, delta4, delta16, delta64");
+        }
 
 		//------------------------------------------------------------------------------------------------------------------------------
 
@@ -492,7 +550,7 @@ namespace SMDProfiler
 				}
 				else if (Convert.ToInt16(bits[0]) == 4)
 				{
-					lblPreheatRate.Text = ((Convert.ToDecimal(bits[2]) - tempStart) / ((Convert.ToInt16(bits[1]) - timeStart) / 2)).ToString("0.00");
+					lblPreheatRate.Text = ((Convert.ToDecimal(bits[2]) - tempStart) / ((Convert.ToDecimal(bits[1]) - timeStart) / 2)).ToString("0.00");
 					lblPreheatRate.Visible = true;
 					lblPreheatEndTemp.Text = bits[2];
 					lblPreheatEndTemp.Visible = true;
@@ -513,6 +571,13 @@ namespace SMDProfiler
 				lastSeries = Convert.ToInt16(bits[0]);
 			}
 		}
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+        private void term_Process_RUN(string[] bits)
+        {
+            logFile.Close();
+        }
 
 //------------------------------------------------------------------------------------------------------------------------------
 
@@ -553,6 +618,10 @@ namespace SMDProfiler
 				{
 					process = bits[0];
 				}
+                if ((bits[0] == "=END") || (bits[0] == "=ABORT"))
+                {
+                    series[process].TermFunc(bits);
+                }
 				series[bits[0]].InitFunc(bits);
 			}
 			else
@@ -560,6 +629,7 @@ namespace SMDProfiler
 				lblTemp.Text = bits[2] + "°C";
 				if (Convert.ToInt16(bits[0]) > 2)
 				{
+                    logFile.WriteLine(data);
 					series[process].ProcessFunc(bits);
 
 					if (chart1.ChartAreas.FindByName("ChartArea1").AxisX.Maximum < Convert.ToInt16(bits[1]) / 2)
