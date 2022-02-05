@@ -13,17 +13,18 @@ namespace SMDProfiler
         private string seriesProcess;
         private string[] seriesNames;
         private System.Drawing.Color[] seriesColours;
-        private double maxX, maxY;
+        private double maxX, minY, maxY;
         private SetupDelegate initFunc;
         private SetupDelegate processFunc;
         private SetupDelegate termFunc;
 
-        public __processSeries(string processName, string[] names, System.Drawing.Color[] colours, double maxx, double maxy, SetupDelegate ifunc, SetupDelegate pfunc, SetupDelegate tfunc)
+        public __processSeries(string processName, string[] names, System.Drawing.Color[] colours, double maxx, double miny, double maxy, SetupDelegate ifunc, SetupDelegate pfunc, SetupDelegate tfunc)
         {
             this.seriesProcess = processName;
             this.seriesNames = names;
             this.seriesColours = colours;
             this.maxX = maxx;
+            this.minY = miny;
             this.maxY = maxy;
             this.initFunc = ifunc;
             this.processFunc = pfunc;
@@ -63,6 +64,13 @@ namespace SMDProfiler
         public double MaxX
         {
             get { return maxX; }
+        }
+
+        //------------------------------------------------------------------------------------------------------------------------------
+
+        public double MinY
+        {
+            get { return minY; }
         }
 
         //------------------------------------------------------------------------------------------------------------------------------

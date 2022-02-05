@@ -79,6 +79,14 @@
             this.cbbCOMPorts = new System.Windows.Forms.ComboBox();
             this.Label1 = new System.Windows.Forms.Label();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
+            this.lblPower = new System.Windows.Forms.Label();
+            this.lblP = new System.Windows.Forms.Label();
+            this.lblI = new System.Windows.Forms.Label();
+            this.lblD = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -103,6 +111,14 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.label21);
+            this.splitContainer1.Panel2.Controls.Add(this.label20);
+            this.splitContainer1.Panel2.Controls.Add(this.label19);
+            this.splitContainer1.Panel2.Controls.Add(this.label18);
+            this.splitContainer1.Panel2.Controls.Add(this.lblD);
+            this.splitContainer1.Panel2.Controls.Add(this.lblI);
+            this.splitContainer1.Panel2.Controls.Add(this.lblP);
+            this.splitContainer1.Panel2.Controls.Add(this.lblPower);
             this.splitContainer1.Panel2.Controls.Add(this.btnGetOven);
             this.splitContainer1.Panel2.Controls.Add(this.btnBootldr);
             this.splitContainer1.Panel2.Controls.Add(this.btnProgram);
@@ -117,8 +133,8 @@
             this.splitContainer1.Panel2.Controls.Add(this.btnConnect);
             this.splitContainer1.Panel2.Controls.Add(this.cbbCOMPorts);
             this.splitContainer1.Panel2.Controls.Add(this.Label1);
-            this.splitContainer1.Size = new System.Drawing.Size(1264, 986);
-            this.splitContainer1.SplitterDistance = 743;
+            this.splitContainer1.Size = new System.Drawing.Size(1904, 1041);
+            this.splitContainer1.SplitterDistance = 798;
             this.splitContainer1.TabIndex = 0;
             this.splitContainer1.TabStop = false;
             // 
@@ -163,15 +179,16 @@
             legend1.ForeColor = System.Drawing.Color.White;
             legend1.Name = "Chart1Legend";
             legend1.Position.Auto = false;
-            legend1.Position.Height = 18.32884F;
-            legend1.Position.Width = 15F;
+            legend1.Position.Height = 8F;
+            legend1.Position.Width = 10F;
             legend1.Position.X = 11F;
             legend1.Position.Y = 5F;
+            legend1.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Tall;
             this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(0, 0);
             this.chart1.Name = "chart1";
             this.chart1.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Pastel;
-            this.chart1.Size = new System.Drawing.Size(1264, 743);
+            this.chart1.Size = new System.Drawing.Size(1904, 798);
             this.chart1.TabIndex = 0;
             this.chart1.TabStop = false;
             this.chart1.Text = "chart1";
@@ -651,15 +668,100 @@
             this.Label1.TabIndex = 1;
             this.Label1.Text = "Available Serial Ports";
             // 
+            // lblPower
+            // 
+            this.lblPower.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPower.ForeColor = System.Drawing.Color.DarkSlateBlue;
+            this.lblPower.Location = new System.Drawing.Point(1334, 14);
+            this.lblPower.Name = "lblPower";
+            this.lblPower.Size = new System.Drawing.Size(160, 40);
+            this.lblPower.TabIndex = 19;
+            this.lblPower.Text = "    ";
+            this.lblPower.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // lblP
+            // 
+            this.lblP.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblP.ForeColor = System.Drawing.Color.DarkSlateBlue;
+            this.lblP.Location = new System.Drawing.Point(1334, 68);
+            this.lblP.Name = "lblP";
+            this.lblP.Size = new System.Drawing.Size(160, 40);
+            this.lblP.TabIndex = 20;
+            this.lblP.Text = "    ";
+            this.lblP.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // lblI
+            // 
+            this.lblI.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblI.ForeColor = System.Drawing.Color.DarkSlateBlue;
+            this.lblI.Location = new System.Drawing.Point(1334, 122);
+            this.lblI.Name = "lblI";
+            this.lblI.Size = new System.Drawing.Size(160, 40);
+            this.lblI.TabIndex = 21;
+            this.lblI.Text = "    ";
+            this.lblI.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // lblD
+            // 
+            this.lblD.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblD.ForeColor = System.Drawing.Color.DarkSlateBlue;
+            this.lblD.Location = new System.Drawing.Point(1334, 176);
+            this.lblD.Name = "lblD";
+            this.lblD.Size = new System.Drawing.Size(160, 40);
+            this.lblD.TabIndex = 22;
+            this.lblD.Text = "    ";
+            this.lblD.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label18.Location = new System.Drawing.Point(1296, 30);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(37, 13);
+            this.label18.TabIndex = 16;
+            this.label18.Text = "Power";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label19.Location = new System.Drawing.Point(1296, 84);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(14, 13);
+            this.label19.TabIndex = 23;
+            this.label19.Text = "P";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label20.Location = new System.Drawing.Point(1296, 138);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(10, 13);
+            this.label20.TabIndex = 24;
+            this.label20.Text = "I";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label21.Location = new System.Drawing.Point(1296, 192);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(15, 13);
+            this.label21.TabIndex = 25;
+            this.label21.Text = "D";
+            // 
             // SMDReflowProfiler
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1264, 986);
+            this.ClientSize = new System.Drawing.Size(1904, 1041);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SMDReflowProfiler";
             this.Text = "SMD Reflow Profiler";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_Close);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -725,6 +827,14 @@
 				private System.Windows.Forms.Button btnProgram;
 				private System.Windows.Forms.Button btnBootldr;
 				private System.Windows.Forms.Button btnGetOven;
+        internal System.Windows.Forms.Label lblD;
+        internal System.Windows.Forms.Label lblI;
+        internal System.Windows.Forms.Label lblP;
+        internal System.Windows.Forms.Label lblPower;
+        internal System.Windows.Forms.Label label21;
+        internal System.Windows.Forms.Label label20;
+        internal System.Windows.Forms.Label label19;
+        internal System.Windows.Forms.Label label18;
     }
 }
 

@@ -49,12 +49,16 @@ namespace SMDProfiler
 			InitializeComponent();
 
 			series = new Dictionary<string,__processSeries>(6);
-			series.Add("=RUN", new __processSeries("RUN", new string[] { "Preheat", "Preheat cutoff", "Soak", "Reflow", "Reflow cutoff", "Open door", "Cooldown" }, 
-													new System.Drawing.Color[] { Color.LightSkyBlue, Color.Gold, Color.LawnGreen, Color.Red, Color.DarkOrange, Color.MediumOrchid, Color.MediumSlateBlue }, 360, 250, setup_Process_RUN, Process_RUN, term_Process_RUN));
+			series.Add("=RUN", new __processSeries("RUN", new string[] { "Preheat", "Preheat cutoff", "Soak", "Reflow", "Reflow cutoff", "Dwell", "Cooldown" }, 
+													new System.Drawing.Color[] { Color.LightSkyBlue, Color.Gold, Color.LawnGreen, Color.Red, Color.DarkOrange, Color.MediumOrchid, Color.MediumSlateBlue }, 360, 0, 250, setup_Process_RUN, Process_RUN, term_Process_RUN));
 			series.Add("=OCAL", new __processSeries("OCAL", new string[] { "5%", "10%", "15%", "20%", "25%", "30%", "35%", "40%", "45%", "50%"},
-                                                    new System.Drawing.Color[] { Color.LightSkyBlue, Color.Gold, Color.LawnGreen, Color.Red, Color.DarkOrange, Color.MediumOrchid, Color.MediumSlateBlue, Color.LightSalmon, Color.Moccasin, Color.Peru}, 900, 300, setup_Process_OCAL, Process_OCAL, term_Process_OCAL));
-            series.Add("=O120", new __processSeries("O120", new string[] { "100%", "Overshoot" },
-                                                    new System.Drawing.Color[] { Color.LightSkyBlue, Color.Gold }, 360, 250, setup_Process_O120, Process_O120, term_Process_O120));
+                                                    new System.Drawing.Color[] { Color.LightSkyBlue, Color.Gold, Color.LawnGreen, Color.Red, Color.DarkOrange, Color.MediumOrchid, Color.MediumSlateBlue, Color.LightSalmon, Color.Moccasin, Color.Peru}, 900, 0, 300, setup_Process_OCAL, Process_OCAL, term_Process_OCAL));
+			series.Add("=OPIDTEST", new __processSeries("OPIDTEST", new string[] { "PID" },
+													new System.Drawing.Color[] { Color.LightSkyBlue }, 900, 30, 70, setup_Process_OPIDTest, Process_OPIDTest, term_Process_OPIDTest));
+			series.Add("=O60", new __processSeries("O60", new string[] { "20%", "5%", "Overshoot" },
+													new System.Drawing.Color[] { Color.LightSkyBlue, Color.Gold, Color.LawnGreen }, 360, 0, 250, setup_Process_O60, Process_O60, term_Process_O60));
+			series.Add("=O120", new __processSeries("O120", new string[] { "100%", "Overshoot" },
+                                                    new System.Drawing.Color[] { Color.LightSkyBlue, Color.Gold }, 360, 0, 250, setup_Process_O120, Process_O120, term_Process_O120));
             series.Add("=END", new __processSeries(end_Process));
 			series.Add("=ABORT", new __processSeries(abort_Process));
 			series.Add("=OGET", new __processSeries(oven_get));
@@ -237,6 +241,7 @@ namespace SMDProfiler
 			clearGraph();
 
 			chart1.ChartAreas.FindByName("ChartArea1").AxisX.Maximum = series[type].MaxX;
+			chart1.ChartAreas.FindByName("ChartArea1").AxisY.Minimum = series[type].MinY;
 			chart1.ChartAreas.FindByName("ChartArea1").AxisY.Maximum = series[type].MaxY;
 			for (i = 0; i < series[type].SeriesNames.Length; i++)
 			{
@@ -439,7 +444,7 @@ namespace SMDProfiler
 			lblProcess.ForeColor = Color.Red;
             DateTime now = DateTime.Now;
             logFile = new System.IO.StreamWriter(@"z:\\temp\\SMD Profiler OCAL "+now.ToString("yyyyMMdd HHmmss")+".txt");
-            logFile.WriteLine("stage, time, temp, duty, delta4, delta16, delta64");
+            logFile.WriteLine("stage, time, temp, duty, delta4, delta16, delta64,error");
 		}
 		
 //------------------------------------------------------------------------------------------------------------------------------
@@ -463,7 +468,75 @@ namespace SMDProfiler
 
 //------------------------------------------------------------------------------------------------------------------------------
 
-        private void setup_Process_O120(string[] bits)
+		private void setup_Process_OPIDTest(string[] bits)
+		{
+			createGraph(process);
+			lastSeries = 3;
+			lblProcess.Text = series[process].SeriesProcess + " - " + series[process].SeriesNames[0];
+			lblProcess.ForeColor = Color.Red;
+			DateTime now = DateTime.Now;
+			logFile = new System.IO.StreamWriter(@"z:\\temp\\SMD PID Test " + now.ToString("yyyyMMdd HHmmss") + ".txt");
+			logFile.WriteLine("stage, time, temp, duty, delta4, delta16, delta64,error");
+		}
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+		private void Process_OPIDTest(string[] bits)
+		{
+			if (lastSeries != Convert.ToInt16(bits[0]))
+			{
+				chart1.Series.FindByName(series[process].SeriesNames[Convert.ToInt16(bits[0]) - 4]).Points.AddXY(Convert.ToInt16(bits[1]) / 2, Convert.ToDecimal(bits[2]));
+
+				lblProcess.Text = series[process].SeriesProcess + " - " + series[process].SeriesNames[Convert.ToInt16(bits[0]) - 3];
+
+				lastSeries = Convert.ToInt16(bits[0]);
+			}
+		}
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+		private void term_Process_OPIDTest(string[] bits)
+		{
+			logFile.Close();
+		}
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+		private void setup_Process_O60(string[] bits)
+		{
+			createGraph(process);
+			lastSeries = 3;
+			lblProcess.Text = series[process].SeriesProcess + " - " + series[process].SeriesNames[0];
+			lblProcess.ForeColor = Color.Red;
+			DateTime now = DateTime.Now;
+			logFile = new System.IO.StreamWriter(@"z:\\temp\\SMD Profiler O60 " + now.ToString("yyyyMMdd HHmmss") + ".txt");
+			logFile.WriteLine("stage, time, temp, duty, delta4, delta16, delta64,error");
+		}
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+		private void Process_O60(string[] bits)
+		{
+			if (lastSeries != Convert.ToInt16(bits[0]))
+			{
+				chart1.Series.FindByName(series[process].SeriesNames[Convert.ToInt16(bits[0]) - 4]).Points.AddXY(Convert.ToInt16(bits[1]) / 2, Convert.ToDecimal(bits[2]));
+
+				lblProcess.Text = series[process].SeriesProcess + " - " + series[process].SeriesNames[Convert.ToInt16(bits[0]) - 3];
+
+				lastSeries = Convert.ToInt16(bits[0]);
+			}
+		}
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+		private void term_Process_O60(string[] bits)
+		{
+			logFile.Close();
+		}
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+		private void setup_Process_O120(string[] bits)
         {
             createGraph(process);
             lastSeries = 3;
@@ -471,7 +544,7 @@ namespace SMDProfiler
             lblProcess.ForeColor = Color.Red;
             DateTime now = DateTime.Now;
             logFile = new System.IO.StreamWriter(@"z:\\temp\\SMD Profiler O120 " + now.ToString("yyyyMMdd HHmmss") + ".txt");
-            logFile.WriteLine("stage, time, temp, duty, delta4, delta16, delta64");
+            logFile.WriteLine("stage, time, temp, duty, delta4, delta16, delta64,error");
         }
 
 //------------------------------------------------------------------------------------------------------------------------------
@@ -522,7 +595,7 @@ namespace SMDProfiler
             tempStart = 0;
             DateTime now = DateTime.Now;
             logFile = new System.IO.StreamWriter(@"z:\\temp\\SMD Profiler OCAL " + now.ToString("yyyyMMdd HHmmss") + ".txt");
-            logFile.WriteLine("stage, time, temp, duty, delta4, delta16, delta64");
+            logFile.WriteLine("stage, time, temp, duty, delta4, delta16, delta64,error");
         }
 
 		//------------------------------------------------------------------------------------------------------------------------------
@@ -624,9 +697,16 @@ namespace SMDProfiler
                 }
 				series[bits[0]].InitFunc(bits);
 			}
+			else if (bits[0][0] == '#')
+            {
+				lblP.Text = bits[1];
+				lblI.Text = bits[2];
+				lblD.Text = bits[3];
+			}
 			else
 			{
 				lblTemp.Text = bits[2] + "°C";
+				lblPower.Text = bits[3] + "%";
 				if (Convert.ToInt16(bits[0]) > 2)
 				{
                     logFile.WriteLine(data);
